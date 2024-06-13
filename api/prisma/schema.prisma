@@ -13,40 +13,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// USUARIO
+//
+//  id_usuario          INT, PK
+//  nombre              STRING
+//  correo              STIRNG
+//  descripcion_usuario STRING
+//  clave               STRING
+//
 model Usuario {
   id_usuario            Int     @id @default(autoincrement())
   nombre                String  @db.Text()
   correo                String  @db.Text()
   descripcion_usuario   String  @db.Text()
-  contrasena            String  @db.Text()
+  clave                 String  @db.Text()
 
   Remitente_correo      Correo[] @relation("Remitente")
   Destinatario_correo   Correo[] @relation("Destinatario")
 
   Persona_bloqueada     Bloqueados[] @relation("Bloqueado")
   Usuario               Bloqueados[] @relation("Usuario")
+
+  Usuario2               Correos_favoritos[] @relation("Usuario")
 }
 
+// CORREOS
+//
+//  id_correo        INT, PK
+//  id_remitente     INT, FK
+//  id_destinatario  INT, FK
+//  asunto           STRING
+//  cuerpo           STIRNG
+//
 model Correo {
-  id_correo         Int     @id @default(autoincrement())
-
   remitente         Usuario @relation("Remitente", fields: [id_remitente], references: [id_usuario])
-  id_remitente      Int
-
   destinatario      Usuario @relation("Destinatario", fields: [id_destinatario], references: [id_usuario])
-  id_destinatario   Int
 
+  id_correo         Int     @id @default(autoincrement())   //PK
+  id_remitente      Int     // FK
+  id_destinatario   Int     // FK
   asunto            String  @db.Text()
   cuerpo            String  @db.Text()
-  es_favorito       Int     @default(0)
+
+  Correo            Correos_favoritos[] @relation("Correo")
 }
 
+// BLOQUEADOS
+//
+//  id_usuario    INT, FK
+//  id_bloqueado  INT, FK
+//
+//  PK(id_usuario, id_bloqueado)
 model Bloqueados {
-  Usuario           Usuario @relation("Usuario", fields: [id_user], references: [id_usuario])
-  id_user           Int
-
+  Usuario           Usuario @relation("Usuario", fields: [id_usuario], references: [id_usuario])
   Bloqueado         Usuario @relation("Bloqueado", fields: [id_bloqueado], references: [id_usuario])
-  id_bloqueado      Int
 
-  @@id([id_user, id_bloqueado])
+  id_usuario        Int     // FK
+  id_bloqueado      Int     // FK
+
+  @@id([id_usuario, id_bloqueado]) // PK(FK, FK)
+}
+// CORREOS_FAVORITOS
+//
+//  id_usuario INT, FK
+//  id_correo  INT, FK
+//
+//  PK(id_usuario, id_correo)
+model Correos_favoritos {
+  Usuario          Usuario @relation("Usuario", fields: [id_usuario], references: [id_usuario])
+  Correo           Correo  @relation("Correo", fields: [id_correo], references: [id_correo])
+
+  id_usuario       Int    // FK
+  id_correo        Int    // FK
+
+  @@id([id_usuario, id_correo])  // PK(FK, FK)
 }
