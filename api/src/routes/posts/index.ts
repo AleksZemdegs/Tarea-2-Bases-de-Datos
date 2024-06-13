@@ -3,7 +3,11 @@ import { Elysia, t } from 'elysia';
 import {
   registrar_usuario,
   get_usuario,
-  enviar_correo
+  enviar_correo,
+  marcar_correo,
+  desmarcar_correo,
+  mostrar_favoritos,
+  bloquear_usuario,
 } from './handlers';
 
 const api_routes = new Elysia()
@@ -28,7 +32,12 @@ const api_routes = new Elysia()
     })
   })
   
-  .post('/bloquear', () => 'Bloquear Usuario')
+  .post('/bloquear', ({body}) => bloquear_usuario(body), {
+    body: t.Object({
+      id_usuario: t.Numeric(),
+      id_bloqueado: t.Numeric(),
+    })
+  })
 
   .post('/enviarcorreo', ({ body }) => enviar_correo(body), {
     body: t.Object({
@@ -45,9 +54,25 @@ const api_routes = new Elysia()
     })
   })
 
-  .post('/marcarcorreo', () => 'Marcar Correo')
+  .post('/marcarcorreo', ({ body }) => marcar_correo(body), {
+    body: t.Object({
+      id_usuario: t.Numeric(),
+      id_correo: t.Numeric(),
+    })
+  })
 
-  .delete('/desmarcarcorreo', () => 'Desmarcar Correo')
+  .delete('/desmarcarcorreo', ({ body }) => desmarcar_correo(body), {
+    body: t.Object({
+      id_usuario: t.Numeric(),
+      id_correo: t.Numeric(),
+    })
+  })
+
+  .get('/mostrarfavoritos', ({ body }) => mostrar_favoritos(body), {
+    body: t.Object({
+      id_usuario: t.Numeric(),
+    })
+  })
 
   .get('/informacion/:correo', ({ params: { correo } }) => get_usuario(correo), {
     params: t.Object({
@@ -56,54 +81,3 @@ const api_routes = new Elysia()
   })
 
 export default api_routes;
- 
-// const postsRoutes = new Elysia({ prefix: '/posts' })
-//   .get('/', () => getPosts())
-//   .get('/:id', ({ params: { id } }) => getPost(id), {
-//     params: t.Object({
-//       id: t.Numeric(),
-//     }),
-//   })
-//   .post('/', ({ body }) => createPost(body), {
-//     body: t.Object({
-//       title: t.String({
-//         minLength: 3,
-//         maxLength: 50,
-//       }),
-//       content: t.String({
-//         minLength: 3,
-//         maxLength: 50,
-//       }),
-//     }),
-//   })
-//   .patch('/:id', ({ params: { id }, body }) => updatePost(id, body), {
-//     params: t.Object({
-//       id: t.Numeric(),
-//     }),
-//     body: t.Object(
-//       {
-//         title: t.Optional(
-//           t.String({
-//             minLength: 3,
-//             maxLength: 50,
-//           })
-//         ),
-//         content: t.Optional(
-//           t.String({
-//             minLength: 3,
-//             maxLength: 50,
-//           })
-//         ),
-//       },
-//       {
-//         minProperties: 1,
-//       }
-//     ),
-//   })
-//   .delete('/', ({ body }) => deletePost(body), {
-//     body: t.Object({
-//       id: t.Numeric(),
-//     }),
-//   });
- 
-// export default postsRoutes;

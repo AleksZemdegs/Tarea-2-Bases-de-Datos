@@ -1,66 +1,21 @@
 import { NotFoundError } from 'elysia';
 import db from '../../db';
  
-// /**
-//  * Getting all posts
-//  */
-// export async function getPosts() {
-//   try {
-//     return await db.post.findMany({ orderBy: { createdAt: 'asc' } });
-//   } catch (e: unknown) {
-//     console.error(`Error getting posts: ${e}`);
-//   }
-// }
- 
-// /**
-//  * Getting a post by ID
-//  */
-// export async function getPost(id: number) {
-//   try {
-//     const post = await db.post.findUnique({
-//       where: { id },
-//     });
- 
-//     if (!post) {
-//       throw new NotFoundError('Post not found.');
-//     }
- 
-//     return post;
-//   } catch (e: unknown) {
-//     console.error(`Error finding post: ${e}`);
-//   }
-// }
-
-// /**
-//  * Deleting a post
-//  */
-// export async function deletePost(options: { id: number }) {
-//   try {
-//     const { id } = options;
- 
-//     return await db.post.delete({
-//       where: { id },
-//     });
-//   } catch (e: unknown) {
-//     console.error(`Error deleting post: ${e}`);
-//   }
-// }
-
 /*
   TO-DO:
 
   > GET*   - Mostrar correos por destinatario              (GET Correos, destinatario == id_usuario)
 
-  > PATCH  - Bloquear usuario                              (PATCH Bloqueados)
+  > POST   ! Bloquear usuario                              (POST Bloqueados)
   > GET*   - Mostrar usuarios bloqueados por otro usuario  (GET Bloqueados, id_usuario (que bloquea) == id_usuario)
 
-  > PATCH  - Marcar correo como favorito                   (PATCH Correos)
-  > PATCH  - Desmarcar correo como favorito                (PATCH Correos)
-  > GET    - Mostrar correos favoritos                     (GET from Correos, es_favorito == 1)
+  > POST   ! Marcar correo como favorito                   (POST Correos_favoritos)
+  > POST   ! Desmarcar correo como favorito                (POST Correos_Favoritos)
+  > GET    ! Mostrar correos favoritos                     (GET Correos_favoritos, id_usuario == id)
 
-  > PUSH   ! Enviar correo                                 (PUSH Correos)
+  > POST   ! Enviar correo                                 (POST Correos)
 
-  > PUSH   ! Crear usuario                                 (PUSH Usuario)
+  > POST   ! Crear usuario                                 (POST Usuario)
   > GET    ! Mostrar información de un usuario             (GET Usuario)
   > DELETE*! Borrar usuario                                (DELETE Usuario)
 
@@ -70,25 +25,12 @@ import db from '../../db';
 
 */
 
-// REGISTRAR USUARIO - PUSH
+// REGISTRAR USUARIO - POST
+//
+// Recibe un nombre, un correo, una descripcion y clave y genera
+// un nuevo usuario con esos atributos en la DB
 
-/**
- * Creating a post
- 
-export async function createPost(options: { title: string; content: string }) {
-  try {
-    const { title, content } = options;
- 
-    return await db.post.create({ data: { title, content } });
-  } catch (e: unknown) {
-    console.error(`Error creating post: ${e}`);
-  }
-}
-  */
-
-// export: Función se puede usar en otros módulos.
-// async: Función es asincrónica, se puede usar 'await'.
-export async function registrar_usuario(
+export async function registrar_usuario( // export: Función se puede usar en otros módulos. // async: Función es asincrónica, se puede usar 'await'.
   options: { nombre: string; correo: string; descripcion: string; clave: string; }) {
 
   try {
@@ -101,26 +43,9 @@ export async function registrar_usuario(
 }
 
 // MOSTRAR INFO DE UN USUARIO - GET
-
-/*
- * Getting a post by ID
-
-export async function getPost(id: number) {
-  try {
-    const post = await db.post.findUnique({
-      where: { id },
-    });
- 
-    if (!post) {
-      throw new NotFoundError('Post not found.');
-    }
- 
-    return post;
-  } catch (e: unknown) {
-    console.error(`Error finding post: ${e}`);
-  }
-}
-  */
+//
+// Recibe un correo como input y busca a un usuario con dicho
+// correo en la DB y lo retorna.
 
 export async function get_usuario(correo: string) {
   try {
@@ -139,22 +64,9 @@ export async function get_usuario(correo: string) {
 }
 
 // BORRAR USUARIO - DELETE
-
-/**
- * Deleting a post
- 
-export async function deletePost(options: { id: number }) {
-  try {
-    const { id } = options;
- 
-    return await db.post.delete({
-      where: { id },
-    });
-  } catch (e: unknown) {
-    console.error(`Error deleting post: ${e}`);
-  }
-}
-*/
+//
+// Borra un usuario. No usar.
+// NO ESTÁ IMPLEMENTADO
 
 export async function borrar_usuario(options: { id_usuario: number }) {
   try {
@@ -168,21 +80,11 @@ export async function borrar_usuario(options: { id_usuario: number }) {
   }
 }
 
-// ENVIAR CORREO - PUSH
-
-/**
- * Creating a post
- 
-export async function createPost(options: { title: string; content: string }) {
-  try {
-    const { title, content } = options;
- 
-    return await db.post.create({ data: { title, content } });
-  } catch (e: unknown) {
-    console.error(`Error creating post: ${e}`);
-  }
-}
-  */
+// ENVIAR CORREO - POST
+//
+// Recibe dos ids (remitente y destinatario), un asunto y cuerpo de
+// correo como inputs y genera un correo en la DB con dichos
+// atributos.
 
 export async function enviar_correo(
   options: { id_remitente: number; id_destinatario: number; asunto: string; cuerpo: string}) {
@@ -196,4 +98,75 @@ export async function enviar_correo(
   }
 }
 
-// MARCAR CORREO COMO FAVORITO - PATCH
+// MARCAR CORREO COMO FAVORITO - POST
+//
+// Recibe dos IDs (correo y usuario) y genera una nueva entry
+// en la DB con clave compuesta de ambos IDs
+
+export async function marcar_correo(options: { id_usuario: number, id_correo: number }) {
+  try {
+    const { id_usuario, id_correo } = options;
+
+    return await db.correos_favoritos.create({ data: { id_usuario, id_correo } });
+  } catch (e: unknown) {
+    console.error(`Error marcando correo: ${e}`);
+  }
+}
+
+// DESMARCAR CORREO COMO FAVORITO - DELETE
+//
+// Recibe dos IDs (correo y usuario) y borra la entry de
+// la DB que tenga a ambos parámetros como clave compuesta.
+
+export async function desmarcar_correo(options: { id_usuario: number, id_correo: number }) {
+  try {
+    const { id_usuario, id_correo } = options;
+
+    return await db.correos_favoritos.delete({
+      where: { 
+        id_usuario_id_correo: {
+          id_usuario, 
+          id_correo, 
+        } 
+      },
+    });
+  } catch (e: unknown) {
+    console.error(`Error desmarcando correo: ${e}`);
+  }
+}
+
+
+// MOSTRAR CORREOS FAVORITOS - GET
+//
+// Recibe un ID de usuario como input y muestra todos
+// los correos que tenga marcado como favoritos. Es decir,
+// las entries que tengan su ID asociada.
+
+export async function mostrar_favoritos(options: { id_usuario: number }) {
+  try {
+    const { id_usuario } = options;
+
+    return await db.correos_favoritos.findMany({
+      where: { id_usuario }
+    });
+  } catch (e: unknown) {
+    console.error(`Error al mostrar favoritos: ${e}`);
+  }
+
+}
+
+// BLOQUEAR USUARIO - POST
+//
+// Recibe dos IDs (correo y usuario) y genera una nueva entry
+// en la DB con clave compuesta de ambos IDs.
+
+export async function bloquear_usuario(options: { id_usuario: number, id_bloqueado: number}) {
+  try {
+
+    const { id_usuario, id_bloqueado } = options;
+
+    return await db.bloqueados.create({ data: { id_usuario, id_bloqueado}});
+  } catch (e: unknown) {
+    console.error(`Error al bloquear: ${e}`);
+  }
+}
