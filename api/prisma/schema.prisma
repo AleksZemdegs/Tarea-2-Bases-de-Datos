@@ -13,10 +13,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String   @db.Text()
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Usuario {
+  id_usuario            Int     @id @default(autoincrement())
+  nombre                String  @db.Text()
+  correo                String  @db.Text()
+  descripcion_usuario   String  @db.Text()
+  contrasena            String  @db.Text()
+
+  Remitente_correo      Correo[] @relation("Remitente")
+  Destinatario_correo   Correo[] @relation("Destinatario")
+
+  Persona_bloqueada     Bloqueados[] @relation("Bloqueado")
+  Usuario               Bloqueados[] @relation("Usuario")
+}
+
+model Correo {
+  id_correo         Int     @id @default(autoincrement())
+
+  remitente         Usuario @relation("Remitente", fields: [id_remitente], references: [id_usuario])
+  id_remitente      Int
+
+  destinatario      Usuario @relation("Destinatario", fields: [id_destinatario], references: [id_usuario])
+  id_destinatario   Int
+
+  asunto            String  @db.Text()
+  cuerpo            String  @db.Text()
+  es_favorito       Int     @default(0)
+}
+
+model Bloqueados {
+  Usuario           Usuario @relation("Usuario", fields: [id_user], references: [id_usuario])
+  id_user           Int
+
+  Bloqueado         Usuario @relation("Bloqueado", fields: [id_bloqueado], references: [id_usuario])
+  id_bloqueado      Int
+
+  @@id([id_user, id_bloqueado])
 }
