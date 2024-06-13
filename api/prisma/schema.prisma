@@ -18,23 +18,25 @@ datasource db {
 //  id_usuario          INT, PK
 //  nombre              STRING
 //  correo              STIRNG
-//  descripcion_usuario STRING
+//  descripcion         STRING
 //  clave               STRING
 //
 model Usuario {
-  id_usuario            Int     @id @default(autoincrement())
-  nombre                String  @db.Text()
-  correo                String  @db.Text()
-  descripcion_usuario   String  @db.Text()
-  clave                 String  @db.Text()
-
   Remitente_correo      Correo[] @relation("Remitente")
   Destinatario_correo   Correo[] @relation("Destinatario")
 
   Persona_bloqueada     Bloqueados[] @relation("Bloqueado")
-  Usuario               Bloqueados[] @relation("Usuario")
+  Usuario1              Bloqueados[] @relation("Usuario")
 
-  Usuario2               Correos_favoritos[] @relation("Usuario")
+  Usuario2              Correos_favoritos[] @relation("Usuario")
+
+  id_usuario            Int     @id @default(autoincrement())
+  nombre                String  @db.Text()
+  correo                String  @unique @db.Text()
+  descripcion           String  @db.Text()
+  clave                 String  @db.Text()
+
+
 }
 
 // CORREOS
