@@ -28,7 +28,10 @@ model Usuario {
   Persona_bloqueada     Bloqueados[] @relation("Bloqueado")
   Usuario1              Bloqueados[] @relation("Usuario")
 
-  Usuario2              Correos_favoritos[] @relation("Usuario")
+  Usuario2              Correos_favoritos[] @relation("UsuarioA")
+  Usuario3              Correos_favoritos[] @relation("UsuarioB")
+
+  // Atributos
 
   id_usuario            Int     @id @default(autoincrement())
   nombre                String  @db.Text()
@@ -56,8 +59,6 @@ model Correo {
   id_destinatario   Int     // FK
   asunto            String  @db.Text()
   cuerpo            String  @db.Text()
-
-  Correo            Correos_favoritos[] @relation("Correo")
 }
 
 // BLOQUEADOS
@@ -77,13 +78,13 @@ model Bloqueados {
 }
 // CORREOS_FAVORITOS
 //
-//  id_usuario INT, FK
-//  id_correo  INT, FK
+//  id_usuario INT,    FK
+//  correo     INT,    FK
 //
 //  PK(id_usuario, id_correo)
 model Correos_favoritos {
-  Usuario          Usuario @relation("Usuario", fields: [id_usuario], references: [id_usuario])
-  Correo           Correo  @relation("Correo", fields: [id_correo], references: [id_correo])
+  Usuario          Usuario @relation("UsuarioA", fields: [id_usuario], references: [id_usuario])
+  Correo           Usuario @relation("UsuarioB", fields: [id_correo], references: [id_usuario])
 
   id_usuario       Int    // FK
   id_correo        Int    // FK
