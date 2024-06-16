@@ -94,14 +94,16 @@ export async function borrar_usuario(options: { id_usuario: number }) {
 // atributos.
 
 export async function enviar_correo(
-  options: { id_remitente: number; id_destinatario: number; asunto: string; cuerpo: string}) {
-
+  options: { id_remitente: number; id_destinatario: number; asunto: string; cuerpo: string }
+) {
   try {
     const { id_remitente, id_destinatario, asunto, cuerpo } = options;
 
-    return await db.correo.create({ data: { id_remitente, id_destinatario, asunto, cuerpo }});
+    const correo = await db.correo.create({ data: { id_remitente, id_destinatario, asunto, cuerpo }});
+    return crear_respuesta(200, 'Correo enviado correctamente', correo);
   } catch (e: unknown) {
     console.error(`Error enviando correo: ${e}`);
+    return crear_respuesta(400, 'Hubo un error al enviar el correo');
   }
 }
 

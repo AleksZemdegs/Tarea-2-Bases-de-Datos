@@ -42,7 +42,10 @@ const api_routes = new Elysia()
     })
   })
 
-  .post('/enviarcorreo', ({ body }) => enviar_correo(body), {
+  .post('/enviarcorreo', async ({ body }) => {
+    const respuesta = await enviar_correo(body);
+    return respuesta;
+  }, {
     body: t.Object({
       id_remitente: t.Numeric(),
       id_destinatario: t.Numeric(),
@@ -52,7 +55,7 @@ const api_routes = new Elysia()
       }),
       cuerpo: t.String({
         minLength: 1,
-        maxLengh: 250,
+        maxLength: 250,
       }),
     })
   })
