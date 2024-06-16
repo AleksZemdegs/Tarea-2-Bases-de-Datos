@@ -159,13 +159,14 @@ export async function mostrar_favoritos(options: { id_usuario: number }) {
   try {
     const { id_usuario } = options;
 
-    return await db.correos_favoritos.findMany({
+    const favoritos = await db.correos_favoritos.findMany({
       where: { id_usuario }
     });
+    return crear_respuesta(200, 'Correos favoritos mostrados correctamente', favoritos);
   } catch (e: unknown) {
-    console.error(`Error al mostrar favoritos: ${e}`);
+    console.error(`Error al mostrar los correos favoritos: ${e}`);
+    return crear_respuesta(400, 'Hubo un error al mostrar los correos favoritos');
   }
-
 }
 
 // BLOQUEAR USUARIO - POST
