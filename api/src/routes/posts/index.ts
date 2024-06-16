@@ -70,7 +70,10 @@ const api_routes = new Elysia()
     })
   })
 
-  .delete('/desmarcarcorreo', ({ body }) => desmarcar_correo(body), {
+  .delete('/desmarcarcorreo', async ({ body }) => {
+    const respuesta = await desmarcar_correo(body);
+    return respuesta;
+  }, {
     body: t.Object({
       id_usuario: t.Numeric(),
       id_correo: t.Numeric(),
