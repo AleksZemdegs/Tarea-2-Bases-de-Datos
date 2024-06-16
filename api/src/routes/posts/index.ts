@@ -11,7 +11,10 @@ import {
 } from './handlers';
 
 const api_routes = new Elysia()
-  .post('/registrar', ({ body }) => registrar_usuario(body), {
+  .post('/registrar', async ({ body }) => {
+    const respuesta = await registrar_usuario(body);
+    return respuesta;
+  }, {
     body: t.Object({
       nombre: t.String({
         minLength: 1,

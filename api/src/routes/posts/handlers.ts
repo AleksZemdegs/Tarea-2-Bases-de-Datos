@@ -24,7 +24,11 @@ import db from '../../db';
   !: Hecha.
 
 */
-
+const crear_respuesta = (estado: number, mensaje: string, data?: any) => ({
+  estado,
+  mensaje,
+  data,
+});
 // REGISTRAR USUARIO - POST
 //
 // Recibe un nombre, un correo, una descripcion y clave y genera
@@ -36,9 +40,11 @@ export async function registrar_usuario( // export: Función se puede usar en ot
   try {
     const { nombre, correo, descripcion, clave} = options;  // Object Destructuring, para uso más fácil.
 
-    return await db.usuario.create({ data: { nombre, correo, descripcion, clave }});
+    const usuario = await db.usuario.create({ data: { nombre, correo, descripcion, clave }});
+    return crear_respuesta(200, 'Usuario creado correctamente', usuario);
   } catch (e: unknown) {
     console.error(`Error creando usuario: ${e}`);
+    return crear_respuesta(400, 'Hubo un error al crear el usuario');
   }
 }
 
