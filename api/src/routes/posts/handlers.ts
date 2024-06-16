@@ -63,9 +63,10 @@ export async function get_usuario(correo: string) {
       throw new NotFoundError('Usuario no encontrado.');
     }
 
-    return usuario;
+    return crear_respuesta(200, 'Usuario encontrado exitosamente', usuario);
   } catch (e: unknown) {
     console.error(`Error encontrando usuario: ${e}`);
+    return crear_respuesta(400, 'Hubo un error al encontrar el usuario');
   }
 }
 

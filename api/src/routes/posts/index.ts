@@ -77,7 +77,10 @@ const api_routes = new Elysia()
     })
   })
 
-  .get('/informacion/:correo', ({ params: { correo } }) => get_usuario(correo), {
+  .get('/informacion/:correo', async ({ params: { correo } }) => {
+    const respuesta = await get_usuario(correo);
+    return respuesta;
+  }, {
     params: t.Object({
       correo: t.String(),
     })
