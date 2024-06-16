@@ -116,9 +116,11 @@ export async function marcar_correo(options: { id_usuario: number, id_correo: nu
   try {
     const { id_usuario, id_correo } = options;
 
-    return await db.correos_favoritos.create({ data: { id_usuario, id_correo } });
+    const correoFavorito = await db.correos_favoritos.create({ data: { id_usuario, id_correo }});
+    return crear_respuesta(200, 'Correo marcado como favorito exitosamente', correoFavorito);
   } catch (e: unknown) {
     console.error(`Error marcando correo: ${e}`);
+    return crear_respuesta(400, 'Hubo un error al marcar el correo como favorito');
   }
 }
 

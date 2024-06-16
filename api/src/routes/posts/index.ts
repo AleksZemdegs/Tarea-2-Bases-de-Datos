@@ -60,7 +60,10 @@ const api_routes = new Elysia()
     })
   })
 
-  .post('/marcarcorreo', ({ body }) => marcar_correo(body), {
+  .post('/marcarcorreo', async ({ body }) => {
+    const respuesta = await marcar_correo(body);
+    return respuesta;
+  }, {
     body: t.Object({
       id_usuario: t.Numeric(),
       id_correo: t.Numeric(),
