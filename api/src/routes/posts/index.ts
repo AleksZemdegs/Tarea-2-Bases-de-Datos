@@ -35,7 +35,10 @@ const api_routes = new Elysia()
     })
   })
   
-  .post('/bloquear', ({body}) => bloquear_usuario(body), {
+  .post('/bloquear', async ({ body }) => {
+    const respuesta = await bloquear_usuario(body);
+    return respuesta;
+  }, {
     body: t.Object({
       id_usuario: t.Numeric(),
       id_bloqueado: t.Numeric(),

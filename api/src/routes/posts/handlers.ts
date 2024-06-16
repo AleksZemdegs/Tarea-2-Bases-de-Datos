@@ -174,13 +174,14 @@ export async function mostrar_favoritos(options: { id_usuario: number }) {
 // Recibe dos IDs (correo y usuario) y genera una nueva entry
 // en la DB con clave compuesta de ambos IDs.
 
-export async function bloquear_usuario(options: { id_usuario: number, id_bloqueado: number}) {
+export async function bloquear_usuario(options: { id_usuario: number, id_bloqueado: number }) {
   try {
-
     const { id_usuario, id_bloqueado } = options;
 
-    return await db.bloqueados.create({ data: { id_usuario, id_bloqueado}});
+    const bloqueado = await db.bloqueados.create({ data: { id_usuario, id_bloqueado }});
+    return crear_respuesta(200, 'Usuario bloqueado correctamente', bloqueado);
   } catch (e: unknown) {
     console.error(`Error al bloquear: ${e}`);
+    return crear_respuesta(400, 'Hubo un error al bloquear el usuario');
   }
 }
