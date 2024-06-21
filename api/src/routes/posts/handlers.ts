@@ -34,7 +34,7 @@ const verificar_usuario = async (correo: string, clave: string) => {
   const usuario = await db.usuario.findUnique({
     where: { correo },
   });
-  
+
   if (!usuario || usuario.clave !== clave) {
     throw new NotFoundError('Usuario no encontrado o clave incorrecta.');
   }
@@ -126,17 +126,26 @@ export async function enviar_correo(
 // Recibe dos IDs (correo y usuario) y genera una nueva entry
 // en la DB con clave compuesta de ambos IDs
 
-export async function marcar_correo(options: { id_usuario: number, id_correo: number }) {
+export async function marcar_correo(options: { correo: string, clave: string, otro_correo: string }) {
   try {
-    const { id_usuario, id_correo } = options;
+    const { correo, clave, otro_correo } = options;
+    const id_usuario = await verificar_usuario(correo, clave);
+    const destinatario = await db.usuario.findUnique({
+      where: { correo: otro_correo },
+    });
 
-    const correoFavorito = await db.correos_favoritos.create({ data: { id_usuario, id_correo }});
+    if (!destinatario) {
+      throw new NotFoundError('El destinatario no existe');
+    }
+
+    const correoFavorito = await db.correos_favoritos.create({ data: { id_usuario, id_correo: destinatario.id_usuario }});
     return crear_respuesta(200, 'Correo marcado como favorito exitosamente', correoFavorito);
   } catch (e: unknown) {
-    console.error(`Error marcando correo: ${e}`);
+    console.error(`Error marcando como favorito correo: ${e}`);
     return crear_respuesta(400, 'Hubo un error al marcar el correo como favorito');
   }
 }
+
 
 // DESMARCAR CORREO COMO FAVORITO - DELETE
 //
