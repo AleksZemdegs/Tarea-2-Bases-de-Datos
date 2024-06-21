@@ -1,6 +1,6 @@
 import { NotFoundError } from 'elysia';
 import db from '../../db';
- 
+
 /*
   TO-DO:
 
@@ -29,6 +29,20 @@ const crear_respuesta = (estado: number, mensaje: string, data?: any) => ({
   mensaje,
   data,
 });
+
+const verificar_usuario = async (correo: string, clave: string) => {
+  const usuario = await db.usuario.findUnique({
+    where: { correo },
+  });
+  
+  if (!usuario || usuario.clave !== clave) {
+    throw new NotFoundError('Usuario no encontrado o clave incorrecta.');
+  }
+
+  return usuario.id_usuario;
+};
+
+
 // REGISTRAR USUARIO - POST
 //
 // Recibe un nombre, un correo, una descripcion y clave y genera
