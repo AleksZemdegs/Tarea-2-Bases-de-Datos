@@ -13,81 +13,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// USUARIO
-//
-//  id_usuario          INT, PK
-//  nombre              STRING
-//  correo              STIRNG
-//  descripcion         STRING
-//  clave               STRING
-//
-model Usuario {
-  Remitente_correo      Correo[] @relation("Remitente")
-  Destinatario_correo   Correo[] @relation("Destinatario")
-
-  Persona_bloqueada     Bloqueados[] @relation("Bloqueado")
-  Usuario1              Bloqueados[] @relation("Usuario")
-
-  Usuario2              Correos_favoritos[] @relation("UsuarioA")
-  Usuario3              Correos_favoritos[] @relation("UsuarioB")
-
-  // Atributos
-
-  id_usuario            Int     @id @default(autoincrement())
-  nombre                String  @db.Text()
-  correo                String  @unique @db.Text()
-  descripcion           String  @db.Text()
-  clave                 String  @db.Text()
-
-
-}
-
-// CORREOS
-//
-//  id_correo        INT, PK
-//  id_remitente     INT, FK
-//  id_destinatario  INT, FK
-//  asunto           STRING
-//  cuerpo           STIRNG
-//
-model Correo {
-  remitente         Usuario @relation("Remitente", fields: [id_remitente], references: [id_usuario])
-  destinatario      Usuario @relation("Destinatario", fields: [id_destinatario], references: [id_usuario])
-
-  id_correo         Int     @id @default(autoincrement())   //PK
-  id_remitente      Int     // FK
-  id_destinatario   Int     // FK
-  asunto            String  @db.Text()
-  cuerpo            String  @db.Text()
-}
-
-// BLOQUEADOS
-//
-//  id_usuario    INT, FK
-//  id_bloqueado  INT, FK
-//
-//  PK(id_usuario, id_bloqueado)
-model Bloqueados {
-  Usuario           Usuario @relation("Usuario", fields: [id_usuario], references: [id_usuario])
-  Bloqueado         Usuario @relation("Bloqueado", fields: [id_bloqueado], references: [id_usuario])
-
-  id_usuario        Int     // FK
-  id_bloqueado      Int     // FK
-
-  @@id([id_usuario, id_bloqueado]) // PK(FK, FK)
-}
-// CORREOS_FAVORITOS
-//
-//  id_usuario INT,    FK
-//  correo     INT,    FK
-//
-//  PK(id_usuario, id_correo)
-model Correos_favoritos {
-  Usuario          Usuario @relation("UsuarioA", fields: [id_usuario], references: [id_usuario])
-  Correo           Usuario @relation("UsuarioB", fields: [id_correo], references: [id_usuario])
-
-  id_usuario       Int    // FK
-  id_correo        Int    // FK
-
-  @@id([id_usuario, id_correo])  // PK(FK, FK)
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String   @db.Text()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
