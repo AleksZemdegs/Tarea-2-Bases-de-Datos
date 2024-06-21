@@ -197,11 +197,19 @@ export async function mostrar_favoritos(options: { id_usuario: number }) {
 // Recibe dos IDs (correo y usuario) y genera una nueva entry
 // en la DB con clave compuesta de ambos IDs.
 
-export async function bloquear_usuario(options: { id_usuario: number, id_bloqueado: number }) {
+export async function bloquear_usuario(options: { correo: string, clave: string, otro_correo: string }) {
   try {
-    const { id_usuario, id_bloqueado } = options;
+    const { correo, clave, otro_correo } = options;
+    const id_usuario = await verificar_usuario(correo, clave);
+    const usuario_bloqueado = await db.usuario.findUnique({
+      where: { correo: otro_correo },
+    });
 
-    const bloqueado = await db.bloqueados.create({ data: { id_usuario, id_bloqueado }});
+    if (!usuario_bloqueado) {
+      throw new NotFoundError('El usuario a bloquear no existe.');
+    }
+
+    const bloqueado = await db.bloqueados.create({ data: { id_usuario, id_bloqueado: usuario_bloqueado.id_usuario }});
     return crear_respuesta(200, 'Usuario bloqueado correctamente', bloqueado);
   } catch (e: unknown) {
     console.error(`Error al bloquear: ${e}`);
