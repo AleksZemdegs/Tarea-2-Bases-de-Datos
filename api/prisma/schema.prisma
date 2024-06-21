@@ -29,7 +29,6 @@ model Usuario {
   Usuario1              Bloqueados[] @relation("Usuario")
 
   Usuario2              Correos_favoritos[] @relation("UsuarioA")
-  Usuario3              Correos_favoritos[] @relation("UsuarioB")
 
   // Atributos
 
@@ -53,6 +52,7 @@ model Usuario {
 model Correo {
   remitente         Usuario @relation("Remitente", fields: [id_remitente], references: [id_usuario])
   destinatario      Usuario @relation("Destinatario", fields: [id_destinatario], references: [id_usuario])
+  Correo1          Correos_favoritos[] @relation("CorreoID")
 
   id_correo         Int     @id @default(autoincrement())   //PK
   id_remitente      Int     // FK
@@ -84,7 +84,7 @@ model Bloqueados {
 //  PK(id_usuario, id_correo)
 model Correos_favoritos {
   Usuario          Usuario @relation("UsuarioA", fields: [id_usuario], references: [id_usuario])
-  Correo           Usuario @relation("UsuarioB", fields: [id_correo], references: [id_usuario])
+  Correo           Correo @relation("CorreoID", fields: [id_correo], references: [id_correo])
 
   id_usuario       Int    // FK
   id_correo        Int    // FK
