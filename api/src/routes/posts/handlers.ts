@@ -152,21 +152,30 @@ export async function marcar_correo(options: { correo: string, clave: string, ot
 // Recibe dos IDs (correo y usuario) y borra la entry de
 // la DB que tenga a ambos parámetros como clave compuesta.
 
-export async function desmarcar_correo(options: { id_usuario: number, id_correo: number }) {
+export async function desmarcar_correo(options: { correo: string, clave: string, otro_correo: string }) {
   try {
-    const { id_usuario, id_correo } = options;
+    const { correo, clave, otro_correo } = options;
+    const id_usuario = await verificar_usuario(correo, clave);
+
+    const destinatario = await db.usuario.findUnique({
+      where: { correo: otro_correo },
+    });
+
+    if (!destinatario) {
+      throw new NotFoundError('El destinatario no existe');
+    }
 
     await db.correos_favoritos.delete({
       where: { 
         id_usuario_id_correo: {
           id_usuario, 
-          id_correo, 
+          id_correo: destinatario.id_usuario, 
         } 
       },
     });
     return crear_respuesta(200, 'Correo desmarcado como favorito exitosamente');
   } catch (e: unknown) {
-    console.error(`Error desmarcando correo: ${e}`);
+    console.error(`Error desmarcando como favorito correo: ${e}`);
     return crear_respuesta(400, 'Hubo un error al desmarcar el correo como favorito');
   }
 }

@@ -98,8 +98,18 @@ const api_routes = new Elysia()
     return respuesta;
   }, {
     body: t.Object({
-      id_usuario: t.Numeric(),
-      id_correo: t.Numeric(),
+      correo: t.String({
+        minLength: 3,
+        maxLength: 50,
+      }),
+      clave: t.String({
+        minLength: 4,
+        maxLength: 20,
+      }),
+      otro_correo: t.String({
+        minLength: 3,
+        maxLength: 50,
+      }),
     })
   })
 
