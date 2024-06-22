@@ -126,19 +126,19 @@ export async function enviar_correo(
 // Recibe dos IDs (correo y usuario) y genera una nueva entry
 // en la DB con clave compuesta de ambos IDs
 
-export async function marcar_correo(options: { correo: string, clave: string, otro_correo: string }) {
+export async function marcar_correo(options: { correo: string, clave: string, id_correo_a_encontrar: number }) {
   try {
-    const { correo, clave, otro_correo } = options;
+    const { correo, clave, id_correo_a_encontrar } = options;
     const id_usuario = await verificar_usuario(correo, clave);
-    const destinatario = await db.usuario.findUnique({
-      where: { correo: otro_correo },
+    const correo_a_marcar = await db.correo.findUnique({
+      where: { id_correo: id_correo_a_encontrar },
     });
 
-    if (!destinatario) {
+    if (!correo_a_marcar) {
       throw new NotFoundError('El destinatario no existe');
     }
 
-    const correoFavorito = await db.correos_favoritos.create({ data: { id_usuario, id_correo: destinatario.id_usuario }});
+    const correoFavorito = await db.correos_favoritos.create({ data: { id_usuario, id_correo: id_correo_a_encontrar }});
     return crear_respuesta(200, 'Correo marcado como favorito exitosamente', correoFavorito);
   } catch (e: unknown) {
     console.error(`Error marcando como favorito correo: ${e}`);
@@ -152,16 +152,16 @@ export async function marcar_correo(options: { correo: string, clave: string, ot
 // Recibe dos IDs (correo y usuario) y borra la entry de
 // la DB que tenga a ambos parámetros como clave compuesta.
 
-export async function desmarcar_correo(options: { correo: string, clave: string, otro_correo: string }) {
+export async function desmarcar_correo(options: { correo: string, clave: string, id_correo_a_desmarcar: number }) {
   try {
-    const { correo, clave, otro_correo } = options;
+    const { correo, clave, id_correo_a_desmarcar } = options;
     const id_usuario = await verificar_usuario(correo, clave);
 
-    const destinatario = await db.usuario.findUnique({
-      where: { correo: otro_correo },
+    const correo_a_desmarcar = await db.correo.findUnique({
+      where: { id_correo: id_correo_a_desmarcar },
     });
 
-    if (!destinatario) {
+    if (!correo_a_desmarcar) {
       throw new NotFoundError('El destinatario no existe');
     }
 
@@ -169,7 +169,8 @@ export async function desmarcar_correo(options: { correo: string, clave: string,
       where: { 
         id_usuario_id_correo: {
           id_usuario, 
-          id_correo: destinatario.id_usuario, 
+          id_correo: id_correo_a_desmarcar,
+          //: destinatario.id_usuario, 
         } 
       },
     });

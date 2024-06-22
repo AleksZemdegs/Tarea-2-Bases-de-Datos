@@ -86,7 +86,7 @@ const api_routes = new Elysia()
         minLength: 4,
         maxLength: 20,
       }),
-      otro_correo: t.String({
+      id_correo_a_encontrar: t.Numeric({
         minLength: 3,
         maxLength: 50,
       }),
@@ -106,7 +106,7 @@ const api_routes = new Elysia()
         minLength: 4,
         maxLength: 20,
       }),
-      otro_correo: t.String({
+      id_correo_a_desmarcar: t.Numeric({
         minLength: 3,
         maxLength: 50,
       }),
