@@ -114,7 +114,8 @@ const api_routes = new Elysia()
   })
 
   .get('/mostrarfavoritos', async ({ body }) => {
-    const respuesta = await mostrar_favoritos(body);
+    const { id_user } = body;
+    const respuesta = await mostrar_favoritos(id_user);
     return respuesta;
   }, {
     body: t.Object({
