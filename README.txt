@@ -1,4 +1,10 @@
-Instrucciones de uso | DOCKER:
+Instrucciones de uso | Elysia, Bun y Prisma: Dependencias de la API.
+
+1.- Instalar Elysia 
+2.- Bun también, instrucciones en: https://bun.sh/
+3.- Para instalar Prisma, iniciar el siguiente comando dentro de la carpeta /api/: bun add -d prisma
+
+Instrucciones de uso | DOCKER: Dependencia de la API.
 
 1.- Instalar Docker por medio de la página web: https://docs.docker.com/get-docker/
 2.- Abrir Docker y correr el siguiente comando en la consola para crear el container dentro de la app: 
@@ -7,3 +13,9 @@ Instrucciones de uso | DOCKER:
 3.- En el archivo dentro de /api/ llamado '.env' cambiar 'DATABASE_URL=postgresql://postgres:12345678@localhost:5432/postgres?schema=public',
     tal de que donde dice '12345678' por la contraseña de admin que el usuario tiene en Postgres.
 4.- Para hacer una migración, correr el comando: bunx prisma migrate dev --name create-post-model
+
+Instrucciones de uso | Swagger: Dependencia del cliente.
+
+1.- Para instalar Swagger, correr el siguiente comando dentro de la terminal mientras se esté dentro de la carpeta
+    de /api/: bun add @elysiajs/swagger
+
