@@ -188,12 +188,12 @@ export async function desmarcar_correo(options: { correo: string, clave: string,
 // los correos que tenga marcado como favoritos. Es decir,
 // las entries que tengan su ID asociada.
 
-export async function mostrar_favoritos(options: { id_usuario: number }) {
+export async function mostrar_favoritos(options: { id_user: number }) {
   try {
-    const { id_usuario } = options;
+    const { id_user } = options;
 
     const favoritos = await db.correos_favoritos.findMany({
-      where: { id_usuario }
+      where: { id_usuario : id_user}
     });
     return crear_respuesta(200, 'Correos favoritos mostrados correctamente', favoritos);
   } catch (e: unknown) {

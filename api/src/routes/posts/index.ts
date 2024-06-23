@@ -118,7 +118,7 @@ const api_routes = new Elysia()
     return respuesta;
   }, {
     body: t.Object({
-      id_usuario: t.Numeric(),
+      id_user: t.Numeric(),
     })
   })
 
