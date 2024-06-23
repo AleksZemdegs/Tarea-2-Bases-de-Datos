@@ -1,29 +1,7 @@
 import { NotFoundError } from 'elysia';
 import db from '../../db';
 
-/*
-  TO-DO:
 
-  > GET*   - Mostrar correos por destinatario              (GET Correos, destinatario == id_usuario)
-
-  > POST   ! Bloquear usuario                              (POST Bloqueados)
-  > GET*   - Mostrar usuarios bloqueados por otro usuario  (GET Bloqueados, id_usuario (que bloquea) == id_usuario)
-
-  > POST   ! Marcar correo como favorito                   (POST Correos_favoritos)
-  > POST   ! Desmarcar correo como favorito                (POST Correos_Favoritos)
-  > GET    ! Mostrar correos favoritos                     (GET Correos_favoritos, id_usuario == id)
-
-  > POST   ! Enviar correo                                 (POST Correos)
-
-  > POST   ! Crear usuario                                 (POST Usuario)
-  > GET    ! Mostrar información de un usuario             (GET Usuario)
-  > DELETE*! Borrar usuario                                (DELETE Usuario)
-
-  *: No necesario.
-  -: Sin hacer.
-  !: Hecha.
-
-*/
 const crear_respuesta = (estado: number, mensaje: string, data?: any) => ({
   estado,
   mensaje,
