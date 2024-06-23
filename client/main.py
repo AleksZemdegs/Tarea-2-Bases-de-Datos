@@ -34,15 +34,13 @@ def set_fav(adress: str, clave: str):
 
 def get_fav(id_user: int):
     url = "http://localhost:3049/api/mostrarfavoritos"
-
-    payload = {"id_user": id_user}
+    params = {"id_user": id_user}
     headers = {"Content-Type": "application/json"}
 
-    response = requests.get(url, json=payload, headers=headers)
+    response = requests.get(url, headers=headers, params=params)
 
-    print(response.)
+    print(response.status_code, response.text)
     return response.json()
-
 
 typer.echo(typer.style("[★ Bienvenido al cliente de Communiken™ ★]\n"
                        , blink=False, fg=typer.colors.BRIGHT_WHITE, bg=typer.colors.BRIGHT_MAGENTA))

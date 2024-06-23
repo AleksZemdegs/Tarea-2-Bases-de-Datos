@@ -113,13 +113,13 @@ const api_routes = new Elysia()
     })
   })
 
-  .get('/mostrarfavoritos', async ({ body }) => {
-    const { id_user } = body;
-    const respuesta = await mostrar_favoritos(id_user);
+  .get('/mostrarfavoritos', async ({ query }) => {
+    const { id_user } = query;
+    const respuesta = await mostrar_favoritos(parseInt(id_user));
     return respuesta;
   }, {
-    body: t.Object({
-      id_user: t.Numeric(),
+    query: t.Object({
+      id_user: t.String(),
     })
   })
 
