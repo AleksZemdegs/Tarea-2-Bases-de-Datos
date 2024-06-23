@@ -1,29 +1,7 @@
 import { NotFoundError } from 'elysia';
 import db from '../../db';
 
-/*
-  TO-DO:
 
-  > GET*   - Mostrar correos por destinatario              (GET Correos, destinatario == id_usuario)
-
-  > POST   ! Bloquear usuario                              (POST Bloqueados)
-  > GET*   - Mostrar usuarios bloqueados por otro usuario  (GET Bloqueados, id_usuario (que bloquea) == id_usuario)
-
-  > POST   ! Marcar correo como favorito                   (POST Correos_favoritos)
-  > POST   ! Desmarcar correo como favorito                (POST Correos_Favoritos)
-  > GET    ! Mostrar correos favoritos                     (GET Correos_favoritos, id_usuario == id)
-
-  > POST   ! Enviar correo                                 (POST Correos)
-
-  > POST   ! Crear usuario                                 (POST Usuario)
-  > GET    ! Mostrar información de un usuario             (GET Usuario)
-  > DELETE*! Borrar usuario                                (DELETE Usuario)
-
-  *: No necesario.
-  -: Sin hacer.
-  !: Hecha.
-
-*/
 const crear_respuesta = (estado: number, mensaje: string, data?: any) => ({
   estado,
   mensaje,
@@ -126,19 +104,19 @@ export async function enviar_correo(
 // Recibe dos IDs (correo y usuario) y genera una nueva entry
 // en la DB con clave compuesta de ambos IDs
 
-export async function marcar_correo(options: { correo: string, clave: string, otro_correo: string }) {
+export async function marcar_correo(options: { correo: string, clave: string, id_correo_a_encontrar: number }) {
   try {
-    const { correo, clave, otro_correo } = options;
+    const { correo, clave, id_correo_a_encontrar } = options;
     const id_usuario = await verificar_usuario(correo, clave);
-    const destinatario = await db.usuario.findUnique({
-      where: { correo: otro_correo },
+    const correo_a_marcar = await db.correo.findUnique({
+      where: { id_correo: id_correo_a_encontrar },
     });
 
-    if (!destinatario) {
+    if (!correo_a_marcar) {
       throw new NotFoundError('El destinatario no existe');
     }
 
-    const correoFavorito = await db.correos_favoritos.create({ data: { id_usuario, id_correo: destinatario.id_usuario }});
+    const correoFavorito = await db.correos_favoritos.create({ data: { id_usuario, id_correo: id_correo_a_encontrar }});
     return crear_respuesta(200, 'Correo marcado como favorito exitosamente', correoFavorito);
   } catch (e: unknown) {
     console.error(`Error marcando como favorito correo: ${e}`);
@@ -152,16 +130,16 @@ export async function marcar_correo(options: { correo: string, clave: string, ot
 // Recibe dos IDs (correo y usuario) y borra la entry de
 // la DB que tenga a ambos parámetros como clave compuesta.
 
-export async function desmarcar_correo(options: { correo: string, clave: string, otro_correo: string }) {
+export async function desmarcar_correo(options: { correo: string, clave: string, id_correo_a_desmarcar: number }) {
   try {
-    const { correo, clave, otro_correo } = options;
+    const { correo, clave, id_correo_a_desmarcar } = options;
     const id_usuario = await verificar_usuario(correo, clave);
 
-    const destinatario = await db.usuario.findUnique({
-      where: { correo: otro_correo },
+    const correo_a_desmarcar = await db.correo.findUnique({
+      where: { id_correo: id_correo_a_desmarcar },
     });
 
-    if (!destinatario) {
+    if (!correo_a_desmarcar) {
       throw new NotFoundError('El destinatario no existe');
     }
 
@@ -169,7 +147,8 @@ export async function desmarcar_correo(options: { correo: string, clave: string,
       where: { 
         id_usuario_id_correo: {
           id_usuario, 
-          id_correo: destinatario.id_usuario, 
+          id_correo: id_correo_a_desmarcar,
+          //: destinatario.id_usuario, 
         } 
       },
     });
@@ -187,12 +166,10 @@ export async function desmarcar_correo(options: { correo: string, clave: string,
 // los correos que tenga marcado como favoritos. Es decir,
 // las entries que tengan su ID asociada.
 
-export async function mostrar_favoritos(options: { id_usuario: number }) {
+export async function mostrar_favoritos( id_user: number ) {
   try {
-    const { id_usuario } = options;
-
     const favoritos = await db.correos_favoritos.findMany({
-      where: { id_usuario }
+      where: { id_usuario : id_user}
     });
     return crear_respuesta(200, 'Correos favoritos mostrados correctamente', favoritos);
   } catch (e: unknown) {

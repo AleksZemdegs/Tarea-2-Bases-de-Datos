@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -29,7 +23,6 @@ model Usuario {
   Usuario1              Bloqueados[] @relation("Usuario")
 
   Usuario2              Correos_favoritos[] @relation("UsuarioA")
-  Usuario3              Correos_favoritos[] @relation("UsuarioB")
 
   // Atributos
 
@@ -53,6 +46,7 @@ model Usuario {
 model Correo {
   remitente         Usuario @relation("Remitente", fields: [id_remitente], references: [id_usuario])
   destinatario      Usuario @relation("Destinatario", fields: [id_destinatario], references: [id_usuario])
+  Correo1          Correos_favoritos[] @relation("CorreoID")
 
   id_correo         Int     @id @default(autoincrement())   //PK
   id_remitente      Int     // FK
@@ -67,6 +61,7 @@ model Correo {
 //  id_bloqueado  INT, FK
 //
 //  PK(id_usuario, id_bloqueado)
+//
 model Bloqueados {
   Usuario           Usuario @relation("Usuario", fields: [id_usuario], references: [id_usuario])
   Bloqueado         Usuario @relation("Bloqueado", fields: [id_bloqueado], references: [id_usuario])
@@ -76,15 +71,17 @@ model Bloqueados {
 
   @@id([id_usuario, id_bloqueado]) // PK(FK, FK)
 }
+
 // CORREOS_FAVORITOS
 //
 //  id_usuario INT,    FK
 //  correo     INT,    FK
 //
 //  PK(id_usuario, id_correo)
+//
 model Correos_favoritos {
   Usuario          Usuario @relation("UsuarioA", fields: [id_usuario], references: [id_usuario])
-  Correo           Usuario @relation("UsuarioB", fields: [id_correo], references: [id_usuario])
+  Correo           Correo @relation("CorreoID", fields: [id_correo], references: [id_correo])
 
   id_usuario       Int    // FK
   id_correo        Int    // FK
