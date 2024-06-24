@@ -6,10 +6,11 @@ from tabulate import tabulate
 # La función info_mail revisa si el gmail está registrado en la base de datos. Si está registrado
 # retorna un diccionario con los datos del usuario, de lo contrario devuelve una cadena vacía.
 def info_mail(correo: str):
-    url = "http://localhost:3049/api/informacion/" + correo
-    response = requests.get(url)
-    if response.json()['estado'] == 200:
-        return response.json()['data']
+    url = "http://localhost:3049/api/informacion/"
+    response = requests.get(url+correo)
+    datos = response.json()
+    if datos['estado'] == 200:
+        return datos['data']
     else:
         return ""
 
@@ -85,11 +86,12 @@ while True:
 
     if answer == 'Ver información de un correo electrónico':
         mail_2: str = input("- Ingresa el correo: ")
-        info_mail = info_mail(mail_2)
+        info_mail_ = info_mail(mail_2)
 
         tabla = []
-        for key in info_mail:
-            tabla.append([key, info[key]])
+        for key in info_mail_:
+            if key != "clave":
+                tabla.append([key, info_mail_[key]])
 
         print(tabulate(tabla, tablefmt='fancy_grid'))
 
