@@ -19,3 +19,9 @@ Instrucciones de uso | Swagger: Dependencia del cliente.
 1.- Para instalar Swagger, correr el siguiente comando dentro de la terminal mientras se esté dentro de la carpeta
     de /api/: bun add @elysiajs/swagger
 
+Instrucciones de uso | Cliente
+
+1.- Instalar las dependencias con pip -r requirements.txt.
+2.- Ejecutar el cliente con en la terminal con python main.py
+3.- Ingresar correo y clave
+4.- Usar las flechas del teclado y la tecla Enter para navegar en el menu de opciones.
